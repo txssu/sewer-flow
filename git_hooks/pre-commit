@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Pre-commit hook to check code formatting, types, and linting
+
+set -e
+
+# Check formatting
+if ! uv run ruff format --check . --quiet; then
+    echo "Formatting check failed. Run: uv run ruff format ."
+    exit 1
+fi
+
+# Check linting
+if ! uv run ruff check . --quiet; then
+    echo "Linting check failed. Run: uv run ruff check --fix ."
+    exit 1
+fi
+
+# Check types
+if ! uv run basedpyright .; then
+    echo "Type check failed. Run: uv run basedpyright ."
+    exit 1
+fi
+
+exit 0

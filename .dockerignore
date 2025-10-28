@@ -1,0 +1,16 @@
+.venv
+.git
+.gitignore
+.ruff_cache
+.uv-cache
+__pycache__
+*.py[oc]
+.env
+.config.json
+docker-compose.yml
+Dockerfile
+.dockerignore
+ENVS.md
+README.md
+justfile
+git_hooks
