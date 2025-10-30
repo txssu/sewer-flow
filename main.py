@@ -8,6 +8,10 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from aiogram.types import Message
 
+import redis
+
+r = redis.Redis(host="localhost", port=6379, db=0)
+
 # Bot token can be obtained via https://t.me/BotFather
 TOKEN = getenv("BOT_TOKEN")
 if TOKEN is None:
@@ -19,7 +23,7 @@ dp = Dispatcher()
 
 @dp.message()
 async def echo_handler(message: Message) -> None:
-    print(message.text)
+    r.xadd("updates", {"data": message.text})
 
 
 async def main() -> None:
