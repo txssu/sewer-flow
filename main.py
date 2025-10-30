@@ -10,6 +10,8 @@ from aiogram.types import Message
 
 import redis
 
+from src.canonical import CanonicalUpdate
+
 r = redis.Redis(host="localhost", port=6379, db=0)
 
 # Bot token can be obtained via https://t.me/BotFather
@@ -23,7 +25,11 @@ dp = Dispatcher()
 
 @dp.message()
 async def echo_handler(message: Message) -> None:
-    r.xadd("updates", {"data": message.text})
+    assert message.from_user is not None
+    assert message.from_user.id is not None
+    assert message.text is not None
+    x = CanonicalUpdate("tg_" + str(message.from_user.id), message.text)
+    r.xadd("updates", {"data": x.to_json()})
 
 
 async def main() -> None:
