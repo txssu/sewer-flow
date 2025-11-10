@@ -1,14 +1,17 @@
 import logging
-from typing_extensions import override
+from os import getenv
 
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
+from aiogram.client.session.aiohttp import AiohttpSession
+from aiogram.client.telegram import TelegramAPIServer
 from aiogram.enums import ParseMode
 from aiogram.types import Message
+from redis import Redis
+from typing_extensions import override
 
 from src.canonical import CanonicalUpdate
 from src.providers.base import BaseProvider
-from redis import Redis
 
 
 class TelegramProvider(BaseProvider):
@@ -19,7 +22,12 @@ class TelegramProvider(BaseProvider):
 
     logger: logging.Logger
 
-    def __init__(self, stream_name: str, token: str, redis_client: "Redis[bytes]"):
+    def __init__(
+        self,
+        stream_name: str,
+        token: str,
+        redis_client: "Redis[bytes]",
+    ):
         """Initialize Telegram provider.
 
         Args:
@@ -28,15 +36,31 @@ class TelegramProvider(BaseProvider):
             redis_client: Redis client instance
         """
         super().__init__(stream_name, token, redis_client)
+
+        self.logger = logging.getLogger(f"TelegramProvider:{stream_name}")
+
+        api_url = getenv("TELEGRAM_API_URL")
+
+        # Create session with custom API URL if provided
+        session = None
+        if api_url:
+            session = AiohttpSession(
+                api=TelegramAPIServer(
+                    base=f"{api_url}/bot{{token}}/{{method}}",
+                    file=f"{api_url}/file/bot{{token}}/{{method}}",
+                )
+            )
+            self.logger.info(f"Using custom Telegram API URL: {api_url}")
+
         self.bot = Bot(
-            token=token, default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+            token=token,
+            default=DefaultBotProperties(parse_mode=ParseMode.HTML),
+            session=session,
         )
         self.dispatcher = Dispatcher()
 
         # Register message handler
         _ = self.dispatcher.message()(self._handle_message)
-
-        self.logger = logging.getLogger(f"TelegramProvider:{stream_name}")
 
     async def _handle_message(self, message: Message) -> None:
         """Handle incoming Telegram message.
