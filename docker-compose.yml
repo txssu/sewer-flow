@@ -1,5 +1,6 @@
 services:
   redis:
+    restart: unless-stopped
     image: redis:8.2.2
     command: redis-server --save 60 1 --loglevel warning
     ports:
