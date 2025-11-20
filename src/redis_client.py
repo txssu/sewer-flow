@@ -8,8 +8,8 @@ def get_redis_client() -> "Redis[bytes]":
     Returns:
         Redis client configured from environment variables or defaults
     """
-    host = getenv("REDIS_HOST", "localhost")
-    port = int(getenv("REDIS_PORT", "6379"))
-    db = int(getenv("REDIS_DB", "0"))
+    host = getenv("SF_REDIS_HOST", "localhost")
+    port = int(getenv("SF_REDIS_PORT", "6379"))
+    db = int(getenv("SF_REDIS_DB", "0"))
 
     return Redis(host=host, port=port, db=db, decode_responses=False)

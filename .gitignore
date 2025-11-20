@@ -9,5 +9,6 @@ wheels/
 # Virtual environments
 .venv
 
-# Environment variavles
+# Configs
 .env
+.config.json

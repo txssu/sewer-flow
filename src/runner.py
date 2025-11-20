@@ -27,18 +27,18 @@ class MultiProviderRunner:
         for config in configs:
             try:
                 provider = create_provider(
-                    stream_name=config.stream_name,
-                    provider_name=config.provider,
+                    stream_name=config.app,
+                    provider_name=config.platform,
                     token=config.token,
                     redis_client=redis_client,
                 )
                 self.providers.append(provider)
                 self.logger.info(
-                    f"Created provider: {config.provider} for stream: {config.stream_name}"
+                    f"Created provider: {config.platform} for stream: {config.app}"
                 )
             except Exception as e:
                 self.logger.error(
-                    f"Failed to create provider {config.provider} for stream {config.stream_name}: {e}"
+                    f"Failed to create provider {config.platform} for stream {config.app}: {e}"
                 )
                 raise
 
