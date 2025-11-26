@@ -2,7 +2,7 @@ from src.providers.base import BaseProvider
 from src.providers.telegram import TelegramProvider
 from src.providers.tamtam import TamTamProvider
 from src.providers.max import MaxProvider
-from redis import Redis
+from redis.asyncio import Redis
 
 
 def create_provider(

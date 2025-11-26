@@ -7,7 +7,7 @@ from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.client.telegram import TelegramAPIServer
 from aiogram.enums import ParseMode
 from aiogram.types import Message
-from redis import Redis
+from redis.asyncio import Redis
 from typing_extensions import override
 
 from src.canonical import CanonicalUpdate
@@ -73,9 +73,12 @@ class TelegramProvider(BaseProvider):
             return
 
         user_id = f"tg_{message.from_user.id}"
-        canonical_update = CanonicalUpdate(user_id=user_id, text=message.text)
+        sent_at = message.date.isoformat()
+        canonical_update = CanonicalUpdate(
+            user_id=user_id, text=message.text, sent_at=sent_at
+        )
 
-        self.send_to_redis(canonical_update)
+        await self.send_to_redis(canonical_update)
         self.logger.info(f"Sent message to {self.redis_stream} from user {user_id}")
 
     @override

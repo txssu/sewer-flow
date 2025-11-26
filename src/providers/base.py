@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 from src.canonical import CanonicalUpdate
-from redis import Redis
+from redis.asyncio import Redis
 
 
 class BaseProvider(ABC):
@@ -35,10 +35,10 @@ class BaseProvider(ABC):
         """Stop the provider (cleanup resources)."""
         pass
 
-    def send_to_redis(self, update: CanonicalUpdate) -> None:
+    async def send_to_redis(self, update: CanonicalUpdate) -> None:
         """Send canonical update to Redis stream.
 
         Args:
             update: Canonical update to send
         """
-        self.redis_client.xadd(self.redis_stream, {"data": update.to_json()})
+        await self.redis_client.xadd(self.redis_stream, {"data": update.to_json()})

@@ -1,4 +1,4 @@
-from redis import Redis
+from redis.asyncio import Redis
 from os import getenv
 
 
@@ -6,7 +6,7 @@ def get_redis_client() -> "Redis[bytes]":
     """Get Redis client instance.
 
     Returns:
-        Redis client configured from environment variables or defaults
+        Async Redis client configured from environment variables or defaults
     """
     host = getenv("SF_REDIS_HOST", "localhost")
     port = int(getenv("SF_REDIS_PORT", "6379"))

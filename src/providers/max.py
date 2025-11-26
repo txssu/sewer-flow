@@ -1,6 +1,6 @@
 from typing_extensions import override
 
-from redis import Redis
+from redis.asyncio import Redis
 
 from src.providers.base import BaseProvider
 
