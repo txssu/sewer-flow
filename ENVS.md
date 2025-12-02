@@ -13,7 +13,7 @@
 
 ## Схема config.json
 
-```json
+```jsonc
 {
   "bots": [
     {
